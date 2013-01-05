@@ -33,4 +33,8 @@ describe JSTP::API do
       end
     end
   end
+
+  describe '#port' do 
+    it 'should configure the port number'
+  end
 end
