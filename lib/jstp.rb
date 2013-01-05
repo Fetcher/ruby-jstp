@@ -11,5 +11,5 @@ require 'jstp/server'
 require 'jstp/event_machine'
 
 class << self
-  include API
+  include JSTP::API
 end
