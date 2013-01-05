@@ -42,6 +42,8 @@ describe JSTP::Connector do
 
       JSTP::Connector.instance.dispatch @message
     end
+
+    it 'should attach the callback to the client so the message is actually delivered!'
   end
 
   describe '#client' do 
