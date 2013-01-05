@@ -20,5 +20,17 @@ describe JSTP::API do
         o.dispatch &block
       end
     end
+
+    context 'an argument is passed' do 
+      it 'should dispatch the message via the Connector' do
+        message = stub 'message'
+        JSTP::Connector.instance.should_receive(:dispatch)
+          .with message
+
+        o = Object.new
+        o.extend JSTP::API
+        o.dispatch message 
+      end
+    end
   end
 end

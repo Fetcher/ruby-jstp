@@ -10,8 +10,6 @@ require 'jstp/registry'
 require 'jstp/server'
 require 'jstp/event_machine'
 
-module JSTP
-  class << self
-    include API
-  end
+class << self
+  include API
 end
