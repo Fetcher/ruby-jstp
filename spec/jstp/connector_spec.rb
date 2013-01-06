@@ -32,9 +32,12 @@ describe JSTP::Connector do
     end
 
     it 'should open a websocket to the correct resource in the standard port 33333 and set the callback' do 
+      pending "I'm unable to test this properly since providing a Proc will make me lose scope for the client"
       JSTP::Connector.instance.should_receive(:client)
         .with(@message["resource"])
         .and_return @web_socket_client
+
+      @web_socket_client.should_receive(:callback)
 
       @web_socket_client.should_receive(:send_msg)
         .with(@message_json)

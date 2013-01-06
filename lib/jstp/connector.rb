@@ -7,7 +7,10 @@ module JSTP
     # Discovers the server and sends the message
     # @param [Hash/Array] message
     def dispatch message
-      client(message["resource"]).send_msg message.to_json
+      this_client = client(message["resource"])
+      this_client.callback do 
+        this_client.send_msg message.to_json
+      end
     end
 
     # Access to the client pool
