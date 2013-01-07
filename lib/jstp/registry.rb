@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module JSTP
   class Registry
     include Singleton

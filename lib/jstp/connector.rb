@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module JSTP
 
   # Handles the connection functionality for this JSTP reference implementation

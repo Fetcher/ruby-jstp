@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module JSTP
   module Event
     OnMessage = proc { |message|
