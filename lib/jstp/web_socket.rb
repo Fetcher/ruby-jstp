@@ -14,8 +14,8 @@ module JSTP
 
         server.onmessage { |message|
           message = JSON.parse message
-          Connector.instance.block.call message, 
-            JSTP::WebSocket.instance.sockets.key(server)
+          Connector.instance.block.call(message, 
+            JSTP::WebSocket.instance.sockets.key(server))
         }
       }
     end
