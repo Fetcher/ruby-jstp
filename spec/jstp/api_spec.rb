@@ -16,14 +16,15 @@ describe JSTP::API do
   describe '#dispatch' do 
     context 'a block is passed' do 
       it 'should register the block and send JSTP::Server to the EventMachine reactor' do
-        block = proc {
-          "lalal"
-        }
+        block = proc { "lalal" }
+        reader = stub 'reader'
 
-        JSTP::Registry.instance.should_receive(:set)
+        JSTP::Connector.instance.should_receive(:block=)
           .with block
 
-        JSTP::Connector.instance.should_receive(:start)
+        JSTP::Connector.instance.should_receive(:from)
+          .and_return reader
+        reader.should_receive :websocket
 
         o = Object.new
         o.extend JSTP::API
@@ -34,7 +35,12 @@ describe JSTP::API do
     context 'an argument is passed' do 
       it 'should dispatch the message via the Connector' do
         message = stub 'message'
-        JSTP::Connector.instance.should_receive(:dispatch)
+        writer = stub 'writer'
+
+        JSTP::Connector.instance.should_receive(:to)
+          .and_return writer
+
+        writer.should_receive(:websocket)
           .with message
 
         o = Object.new

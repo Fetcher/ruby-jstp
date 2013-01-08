@@ -3,11 +3,10 @@ module JSTP
   module API
     def dispatch *args, &block
       if args.empty? and block
-        Registry.instance.set block
-
-        Connector.instance.start 
+        Connector.instance.block = block
+        Connector.instance.from.websocket 
       else
-        Connector.instance.dispatch args.first
+        Connector.instance.to.websocket args.first
       end
     end
 
