@@ -2,6 +2,17 @@
 require 'spec_helper'
 
 describe JSTP::API do 
+  describe '#strategy' do 
+    it 'should set the strategy' do 
+      o = Object.new
+      o.extend JSTP::API
+
+      o.strategy :websocket
+
+      JSTP::Connector.instance.strategy.should == :websocket
+    end
+  end
+
   describe '#dispatch' do 
     context 'a block is passed' do 
       it 'should register the block and send JSTP::Server to the EventMachine reactor' do
@@ -12,9 +23,7 @@ describe JSTP::API do
         JSTP::Registry.instance.should_receive(:set)
           .with block
 
-        JSTP::EventMachine.should_receive :call
-        EventMachine.should_receive(:run)
-          .with &JSTP::EventMachine
+        JSTP::Connector.instance.should_receive(:start)
 
         o = Object.new
         o.extend JSTP::API

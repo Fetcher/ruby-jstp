@@ -6,65 +6,37 @@ describe JSTP::Connector do
     JSTP::Connector.ancestors.should include Singleton
   end
 
-  describe '#dispatch' do 
-    before do 
-      @message = {
-        "protocol" => ["JSTP", "0.1"],
-        "method" => "POST", 
-        "resource" => [
-          "session.manager",
-          "User"
-        ],
-        "timestamp" => 1357334118,
-        "token" => 3523902859084057289594,
-        "referer" => [
-          "browser",
-          "Registerer"
-        ],
-        "body" => {
-          "login" => "xavier",
-          "email" => "xavier@fetcher.com",
-          "password" => "secret"
-        }
-      }
-
-      @web_socket_client = stub 'web socket client'
-      @message_json = stub 'message json'
-    end
-
-    it 'should open a websocket to the correct resource in the standard port 33333 and set the callback' do 
-      pending "I'm unable to test this properly since providing a Proc will make me lose scope for the client"
-      JSTP::Connector.instance.should_receive(:client)
-        .with(@message["resource"])
-        .and_return @web_socket_client
-
-      @web_socket_client.should_receive(:callback)
-
-      @web_socket_client.should_receive(:send_msg)
-        .with(@message_json)
-      @message.should_receive(:to_json).and_return @message_json
-
-      JSTP::Connector.instance.dispatch @message
-    end
-
-    it 'should attach the callback to the client so the message is actually delivered!'
+  it 'should include a discoverer for Writer' do
+    JSTP::Connector.ancestors.should include Discoverer::Writer 
   end
 
-  describe '#client' do 
-    context 'there is no connection for that address' do 
-      before do
-        @web_socket_client = stub 'web socket client'
-        @resource = ["localhost", "hola", "quetal"]
+  describe '#dispatch' do 
+    before do 
+      @message = stub 'message'
+      @writer = stub 'writer'
+    end
+
+    context 'websocket strategy' do 
+      it 'should send the message to the websocket method in the writer' do 
+        JSTP::Connector.instance.strategy = :websocket
+
+        JSTP::Connector.instance.should_receive(:to)
+          .and_return @writer 
+        @writer.should_receive(:websocket)
+          .with @message
+        JSTP::Connector.instance.dispatch @message
       end
+    end
 
-      it 'should initialize the websocket client' do 
-        EventMachine::WebSocketClient.should_receive(:connect)
-          .with("ws://#{@resource.first}:33333/#{@resource[1..-1].join('/')}")
-          .and_return @web_socket_client
+    context 'tcp strategy' do 
+      it 'should send the message to the tcp method in the writer' do 
+        JSTP::Connector.instance.strategy = :tcp
 
-        JSTP::Connector.instance
-          .client(@resource)
-          .should == @web_socket_client
+        JSTP::Connector.instance.should_receive(:to)
+          .and_return @writer 
+        @writer.should_receive(:tcp)
+          .with @message
+        JSTP::Connector.instance.dispatch @message
       end
     end
   end
@@ -84,6 +56,17 @@ describe JSTP::Connector do
 
     it 'should pass the proc JSTP::Server' do
       pending "Warning, this isn't actually testing the JSTP::Server, I don't know why"
+    end
+  end
+
+  describe '#start' do 
+    it 'should run EventMachine with the JSTP::EventMachine proc' do 
+      JSTP::EventMachine.should_receive :call
+
+      EventMachine.should_receive(:run)
+        .with &JSTP::EventMachine
+
+      JSTP::Connector.instance.start
     end
   end
 end

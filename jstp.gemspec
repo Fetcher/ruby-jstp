@@ -10,6 +10,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency 'em-websocket'
   gem.add_dependency 'em-websocket-client'
+  gem.add_dependency 'discoverer'
 
   gem.add_development_dependency 'rspec'
 

@@ -3,9 +3,9 @@ module JSTP
   module API
     def dispatch *args, &block
       if args.empty? and block
-        JSTP::Registry.instance.set block
+        Registry.instance.set block
 
-        ::EventMachine.run &JSTP::EventMachine
+        Connector.instance.start 
       else
         Connector.instance.dispatch args.first
       end
@@ -13,6 +13,10 @@ module JSTP
 
     def port number
       Connector.instance.port = number
+    end
+
+    def strategy symbol
+      Connector.instance.strategy = symbol
     end
   end
 end
