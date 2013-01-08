@@ -5,10 +5,8 @@ require 'em-websocket-client'
 require 'json'
 require 'discoverer'
 
-require 'jstp/web_socket/event/on_message'
-require 'jstp/web_socket/pool'
-require 'jstp/web_socket/event_machine'
-require 'jstp/web_socket/server'
+require 'jstp/web_socket'
+require 'jstp/tcp'
 
 require 'jstp/api'
 require 'jstp/connector'

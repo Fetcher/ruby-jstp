@@ -4,9 +4,9 @@ module JSTP
     def dispatch *args, &block
       if args.empty? and block
         Connector.instance.block = block
-        Connector.instance.from.websocket 
+        Connector.instance.from.send Connector.instance.strategy 
       else
-        Connector.instance.to.websocket args.first
+        Connector.instance.to.send Connector.instance.strategy, args.first
       end
     end
 
