@@ -5,6 +5,7 @@ require 'em-websocket-client'
 require 'json'
 require 'discoverer'
 require 'symbolmatrix'
+require 'uuid'
 
 require 'jstp/web_socket'
 require 'jstp/tcp'

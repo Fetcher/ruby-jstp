@@ -2,9 +2,21 @@ module JSTP
   class WebSocket
     include Singleton
 
+    def sockets
+      @sockets ||= {}
+    end
+
     def server_setup
       @server_setup ||= proc { |server|
-        server.onmessage &WebSocket.instance.event_on_message
+        server.onopen {
+          JSTP::WebSocket.instance.sockets[UUID.new.generate] = server
+        }
+
+        server.onmessage { |message|
+          message = JSON.parse message
+          Connector.instance.block.call message, 
+            JSTP::WebSocket.instance.sockets.key(server)
+        }
       }
     end
 
@@ -18,8 +30,11 @@ module JSTP
 
     def event_on_message
       @event_on_message ||= proc { |message|
-        Connector.instance.block.call JSON.parse message
+        
       }
+    end
+
+    def event_on_open
     end
 
     def client resource
