@@ -56,12 +56,13 @@ describe Writer::JSTP::Connector do
 
       JSTP::Connector.instance.port = SymbolMatrix inbound: 4444, outbound: 3333
 
-      JSTP::TCP.instance.should_receive(:client).with(hostname, JSTP::Connector.instance.port.outbound)
+      TCPSocket.should_receive(:open).with(hostname, JSTP::Connector.instance.port.outbound)
         .and_return socket
 
       message.should_receive(:to_json).and_return message_json
 
       socket.should_receive(:puts).with message_json
+      socket.should_receive(:close)
 
       writer = Writer::JSTP::Connector.new ::JSTP::Connector.instance
       writer.tcp message

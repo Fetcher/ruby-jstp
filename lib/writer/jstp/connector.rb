@@ -19,8 +19,9 @@ module Writer
 
       # Dispatch thid applying the TCP strategy
       def tcp message
-        client = ::JSTP::TCP.instance.client message["resource"].first, @source.port.outbound
+        client = TCPSocket.open message["resource"].first, @source.port.outbound
         client.puts message.to_json
+        client.close
       end
     end
   end
