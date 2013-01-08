@@ -70,6 +70,10 @@ describe JSTP::Connector do
   end
 
   describe '#server' do 
+    before do 
+      JSTP::Connector.instance.port = 33333
+    end
+
     it 'should start a websocket server in 33333' do 
       JSTP::Server.should_receive :call
       EventMachine::WebSocket.should_receive(:start)

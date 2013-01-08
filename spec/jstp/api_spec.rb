@@ -36,6 +36,21 @@ describe JSTP::API do
   end
 
   describe '#port' do 
-    it 'should configure the port number'
+    it 'should configure the port number' do 
+      pending "This is working, but it's untesteable because of Reactor pattern"
+      message = {
+        "resource" => ["localhost"]
+      }
+      o = Object.new
+      o.extend JSTP::API
+      o.port 3000
+
+      ::EventMachine::WebSocket.should_receive(:start)
+        .with(host: "0.0.0.0", port: 3000)
+
+      o.dispatch do 
+        "lala"
+      end
+    end
   end
 end

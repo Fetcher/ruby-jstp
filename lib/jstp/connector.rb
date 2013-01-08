@@ -5,6 +5,12 @@ module JSTP
   class Connector
     include Singleton
 
+    attr_accessor :port
+
+    def initialize
+      @port = 33333
+    end
+
     # Discovers the server and sends the message
     # @param [Hash/Array] message
     def dispatch message
@@ -23,7 +29,7 @@ module JSTP
 
     # Sets up the server to be executed within an EventMachine reactor
     def server
-      ::EventMachine::WebSocket.start host: "0.0.0.0", port: 33333, &JSTP::Server
+      ::EventMachine::WebSocket.start host: "0.0.0.0", port: @port, &JSTP::Server
     end
   end
 end
