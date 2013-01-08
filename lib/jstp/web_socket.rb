@@ -11,7 +11,7 @@ module JSTP
     def event_machine
       @event_machine ||= proc {
         ::EM::WebSocket.start host: "0.0.0.0", 
-                              port: Connector.instance.port, 
+                              port: Connector.instance.port.inbound, 
                               &WebSocket.instance.server_setup
       }
     end
@@ -24,7 +24,7 @@ module JSTP
 
     def client resource
       ::EM::WebSocketClient
-        .connect "ws://#{resource.first}:33333/#{resource[1..-1].join('/')}"
+        .connect "ws://#{resource.first}:#{Connector.instance.port.outbound}/#{resource[1..-1].join('/')}"
     end
   end
 end

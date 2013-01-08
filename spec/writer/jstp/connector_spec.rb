@@ -54,10 +54,9 @@ describe Writer::JSTP::Connector do
 
       resource.should_receive(:first).and_return hostname
 
-      JSTP::Connector.instance.should_receive(:port).
-        and_return 4444
+      JSTP::Connector.instance.port = SymbolMatrix inbound: 4444, outbound: 3333
 
-      TCPSocket.should_receive(:open).with(hostname, 4444)
+      JSTP::TCP.instance.should_receive(:client).with(hostname, JSTP::Connector.instance.port.outbound)
         .and_return socket
 
       message.should_receive(:to_json).and_return message_json

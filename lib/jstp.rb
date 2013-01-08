@@ -4,11 +4,13 @@ require 'em-websocket'
 require 'em-websocket-client'
 require 'json'
 require 'discoverer'
+require 'symbolmatrix'
 
 require 'jstp/web_socket'
 require 'jstp/tcp'
 
 require 'jstp/api'
+require 'jstp/base'
 require 'jstp/connector'
 
 require 'writer/jstp/connector'

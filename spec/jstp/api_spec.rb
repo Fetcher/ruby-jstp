@@ -7,92 +7,50 @@ describe JSTP::API do
       o = Object.new
       o.extend JSTP::API
 
-      o.strategy :websocket
+      o.strategy inbound: :websocket, outbound: :tcp
 
-      JSTP::Connector.instance.strategy.should == :websocket
+      JSTP::Connector.instance.strategy.inbound.should == :websocket
+      JSTP::Connector.instance.strategy.outbound.should == :tcp
     end
   end
 
   describe '#dispatch' do 
-    context 'websocket strategy' do 
-      before do 
-        JSTP::Connector.instance.strategy = :websocket
-      end
+    before do 
+      JSTP::Connector.instance.strategy = SymbolMatrix inbound: :tcp, outbound: :websocket
+    end
 
-      context 'a block is passed' do 
-        it 'should register the block and send JSTP::Server to the EventMachine reactor' do
-          block = proc { "lalal" }
-          reader = stub 'reader'
+    context 'a block is passed' do 
+      it 'should register the block and send JSTP::Server to the EventMachine reactor' do
+        block = proc { "lalal" }
+        reader = stub 'reader'
 
-          JSTP::Connector.instance.should_receive(:block=)
-            .with block
+        JSTP::Connector.instance.should_receive(:block=)
+          .with block
 
-          JSTP::Connector.instance.should_receive(:from)
-            .and_return reader
-          reader.should_receive :websocket
+        JSTP::Connector.instance.should_receive(:from)
+          .and_return reader
+        reader.should_receive :tcp
 
-          o = Object.new
-          o.extend JSTP::API
-          o.dispatch &block
-        end
-      end
-
-      context 'an argument is passed' do 
-        it 'should dispatch the message via the Connector' do
-          message = stub 'message'
-          writer = stub 'writer'
-
-          JSTP::Connector.instance.should_receive(:to)
-            .and_return writer
-
-          writer.should_receive(:websocket)
-            .with message
-
-          o = Object.new
-          o.extend JSTP::API
-          o.dispatch message 
-        end
+        o = Object.new
+        o.extend JSTP::API
+        o.dispatch &block
       end
     end
 
-    context 'tcp strategy' do 
-      before do 
-        JSTP::Connector.instance.strategy = :tcp
-      end
+    context 'an argument is passed' do 
+      it 'should dispatch the message via the Connector' do
+        message = stub 'message'
+        writer = stub 'writer'
 
-      context 'a block is passed' do 
-        it 'should register the block and send JSTP::Server to the EventMachine reactor' do
-          block = proc { "lalal" }
-          reader = stub 'reader'
+        JSTP::Connector.instance.should_receive(:to)
+          .and_return writer
 
-          JSTP::Connector.instance.should_receive(:block=)
-            .with block
+        writer.should_receive(:websocket)
+          .with message
 
-          JSTP::Connector.instance.should_receive(:from)
-            .and_return reader
-          reader.should_receive :tcp
-
-          o = Object.new
-          o.extend JSTP::API
-          o.dispatch &block
-        end
-      end
-
-      context 'an argument is passed' do 
-        it 'should dispatch the message via the Connector' do
-          message = stub 'message'
-          writer = stub 'writer'
-
-          JSTP::Connector.instance.should_receive(:to)
-            .and_return writer
-
-          writer.should_receive(:tcp)
-            .with message
-
-          o = Object.new
-          o.extend JSTP::API
-          o.dispatch message 
-        end
+        o = Object.new
+        o.extend JSTP::API
+        o.dispatch message 
       end
     end
   end
@@ -104,9 +62,10 @@ describe JSTP::API do
       }
       o = Object.new
       o.extend JSTP::API
-      o.port 3000
+      o.port inbound: 3000, outbound: 4000
 
-      JSTP::Connector.instance.port.should == 3000
+      JSTP::Connector.instance.port.inbound.should == 3000
+      JSTP::Connector.instance.port.outbound.should == 4000
     end
   end
 end

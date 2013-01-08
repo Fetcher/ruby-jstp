@@ -10,8 +10,8 @@ module JSTP
     attr_accessor :port, :strategy, :block
 
     def initialize
-      @port = 33333
-      @strategy = :tcp
+      @port = SymbolMatrix inbound: 33333, outbound: 33333
+      @strategy = SymbolMatrix inbound: :tcp, outbound: :tcp
     end
   end
 end

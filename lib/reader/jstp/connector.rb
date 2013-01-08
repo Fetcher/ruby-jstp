@@ -14,7 +14,7 @@ module Reader
 
       # Start the server with the TCP strategy
       def tcp
-        @server = TCPServer.open @source.port
+        @server = TCPServer.open @source.port.inbound
         loop {
           Thread.start(@server.accept) { |client|
             @source.block.call JSON.parse client.gets

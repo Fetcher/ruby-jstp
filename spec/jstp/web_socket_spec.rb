@@ -7,7 +7,7 @@ describe JSTP::WebSocket do
 
   describe '#event_machine' do 
     before do 
-      JSTP::Connector.instance.port = 33333
+      JSTP::Connector.instance.port = SymbolMatrix inbound: 33333, outbound: 44444 
     end
 
     it 'should start a websocket server in 33333' do 
@@ -15,7 +15,8 @@ describe JSTP::WebSocket do
         .should_receive :call
 
       EventMachine::WebSocket.should_receive(:start)
-        .with({ host: '0.0.0.0', port: 33333 }, &JSTP::WebSocket.instance.server_setup)
+        .with({ host: '0.0.0.0', port: JSTP::Connector.instance.port.inbound }, 
+          &JSTP::WebSocket.instance.server_setup)
 
       JSTP::WebSocket.instance.event_machine.call
     end
@@ -61,7 +62,7 @@ describe JSTP::WebSocket do
 
       it 'should initialize the websocket client' do 
         EventMachine::WebSocketClient.should_receive(:connect)
-          .with("ws://#{@resource.first}:33333/#{@resource[1..-1].join('/')}")
+          .with("ws://#{@resource.first}:#{JSTP::Connector.instance.port.outbound}/#{@resource[1..-1].join('/')}")
           .and_return @web_socket_client
 
         JSTP::WebSocket.instance

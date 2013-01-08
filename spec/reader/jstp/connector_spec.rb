@@ -20,7 +20,7 @@ describe Reader::JSTP::Connector do
       tcp_server = stub 'tcp server'
 
       TCPServer.should_receive(:open)
-        .with(JSTP::Connector.instance.port)
+        .with(JSTP::Connector.instance.port.inbound)
         .and_return tcp_server
 
       tcp_server.should_receive(:accept)
