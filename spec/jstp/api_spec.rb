@@ -53,6 +53,14 @@ describe JSTP::API do
         o.dispatch message 
       end
     end
+
+    context 'no argument, no block' do 
+      it 'should return the JSTP::Connector.instance' do 
+        o = Object.new
+        o.extend JSTP::API
+        o.dispatch.should == JSTP::Connector.instance
+      end
+    end
   end
 
   describe '#port' do 

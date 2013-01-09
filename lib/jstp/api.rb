@@ -2,9 +2,13 @@
 module JSTP
   module API
     def dispatch *args, &block
-      if args.empty? and block
-        Connector.instance.block = block
-        Connector.instance.from.send Connector.instance.strategy.inbound
+      if args.empty?
+        if block
+          Connector.instance.block = block
+          Connector.instance.from.send Connector.instance.strategy.inbound
+        else
+          Connector.instance
+        end
       else
         Connector.instance.to.send Connector.instance.strategy.outbound, args.first
       end

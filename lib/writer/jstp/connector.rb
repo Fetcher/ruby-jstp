@@ -9,11 +9,29 @@ module Writer
 
       # Dispatch this applying the websocket strategy
       def websocket message
-        this_client = ::JSTP::WebSocket.instance
-          .client message["resource"]
-        json = message.to_json
-        this_client.callback do 
-          this_client.send_msg json
+        begin 
+          this_client = ::JSTP::WebSocket.instance
+            .client message["resource"]
+          json = message.to_json
+          this_client.callback do 
+            this_client.send_msg json
+            this_client.close_connection_after_writing
+          end
+        rescue RuntimeError => e
+          EM.run {
+            this_client = ::JSTP::WebSocket.instance
+              .client message["resource"]
+            json = message.to_json
+
+            this_client.callback do 
+              this_client.send_msg json
+              this_client.close_connection_after_writing
+            end
+
+            this_client.disconnect do 
+              EM::stop_event_loop
+            end
+          }
         end
       end
 

@@ -24,6 +24,8 @@ describe JSTP::WebSocket do
 
   describe '#server_setup' do 
     it 'should set #event_on_message to onmessage' do
+      pending 'Outdated example'
+      
       server = stub 'server'
       JSTP::WebSocket.instance.event_on_message.should_receive :call
 
@@ -36,6 +38,8 @@ describe JSTP::WebSocket do
 
   describe '#event_on_message' do 
     it 'should call the registered block with the parsed message' do 
+      pending 'Outdated example'
+
       @the_proc = stub 'the proc'
       @message = stub 'message'
       @parsed_message = stub 'parsed message'
