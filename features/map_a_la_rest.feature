@@ -75,3 +75,21 @@ Scenario: A compliant dispatch
   Then I should have '523asdf243' in the test log
   Then I should have '{"data": "some data"}' in the test log
   Then I should have '["localhost", "ForDispatch"]' in the test log
+
+Scenario: A dispatch with query arguments
+  Given the class:
+  """
+  class Argumented < JSTP::Controller
+    def put params
+      Testing.test_log << params["query"]
+    end
+  end
+  """
+  When I send the dispatch:
+  """
+  {
+    "method": "PUT",
+    "resource": ["localhost", "Argumented", "querydata"]
+  }
+  """
+  Then I should have '["querydata"]' in the test log
