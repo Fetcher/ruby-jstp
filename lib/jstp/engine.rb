@@ -4,15 +4,37 @@ module JSTP
     
     # Processes the dispatch in the new REST engine way
     def dispatch message
-      resource = eval(message["resource"][1]).new message
-      if message["body"].nil? || message["body"].empty?
+      host, the_class, query = discover_resource message["resource"].clone
+      resource = the_class.new message
+      if query.empty? && (message["body"].nil? || message["body"].empty?)
         resource.send message["method"].downcase.to_sym
       else
         resource.send(
-            message["method"].downcase.to_sym, 
-            {"body" => message["body"]}
-          )
+          message["method"].downcase.to_sym, 
+          {
+            "body" => message["body"],
+            "query" => query
+          }
+        )
       end
+    end
+
+    def discover_resource resource_stack
+      response = []
+      response << resource_stack.shift
+      class_stack = "::"
+      query = []
+      resource_stack.each do |item|
+        begin
+          eval(class_stack + item)
+          class_stack += "#{item}::"
+        rescue NameError, SyntaxError
+          query << item
+        end
+      end
+      response << eval(class_stack[0..-3])
+      response << query
+      return response
     end
   end
 end

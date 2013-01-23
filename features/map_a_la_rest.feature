@@ -93,3 +93,56 @@ Scenario: A dispatch with query arguments
   }
   """
   Then I should have '["querydata"]' in the test log
+
+Scenario: Mixed arguments in the query
+  Given the class:
+  """
+  class Mixed
+    class Argument < JSTP::Controller
+      def delete params
+        Testing.test_log << params["query"]
+      end
+    end
+  end
+  """
+  When I send the dispatch:
+  """
+  {
+    "method": "DELETE",
+    "resource": ["localhost", "Mixed", "54s3453", "Argument", "35asdf"]
+  }
+  """
+  Then I should have '["54s3453", "35asdf"]' in the test log
+
+Scenario: A complex example just for the fun
+  Given the class:
+  """
+  class Deeper
+    class Inside
+      class Klass < JSTP::Controller
+        def get params
+          Testing.test_log << params["query"]
+          Testing.test_log << params["body"]
+          Testing.test_log << @protocol
+          Testing.test_log << @token
+        end
+      end
+    end
+  end
+  """
+  When I send the dispatch:
+  """
+  {
+    "protocol": ["JSTP", "0.1"],
+    "resource": ["localhost", "Deeper", "52345", "Inside", "Klass", "53afas", "54234"],
+    "method": "GET",
+    "token": ["25353"],
+    "body": {
+      "id": 20
+    }
+  }
+  """
+  Then I should have '["JSTP", "0.1"]' in the test log
+  Then I should have '["52345", "53afas", "54234"]' in the test log
+  Then I should have '["25353"]' in the test log
+  Then I should have '{"id": 20}' in the test log
