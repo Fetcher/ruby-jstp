@@ -14,6 +14,9 @@ require 'jstp/api'
 require 'jstp/base'
 require 'jstp/connector'
 
+require 'jstp/engine'
+require 'jstp/controller'
+
 require 'writer/jstp/connector'
 require 'reader/jstp/connector'
 
