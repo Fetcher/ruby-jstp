@@ -17,7 +17,8 @@ module Reader
         @server = TCPServer.open @source.port.inbound
         loop {
           Thread.start(@server.accept) { |client|
-            @source.block.call JSON.parse client.gets
+            binding.pry
+            ::JSTP::Engine.instance.dispatch JSON.parse client.gets
           }
         }
       end

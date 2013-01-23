@@ -1,5 +1,7 @@
 module JSTP
   class Controller
+    include JSTP::API
+    
     def initialize message
       @protocol = message["protocol"]
       @method = message["method"]
