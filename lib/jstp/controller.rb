@@ -9,6 +9,7 @@ module JSTP
       @timestamp = message["timestamp"]
       @token = message["token"]
       @resource = message["resource"]
+      @message = message
     end
   end
 end
