@@ -10,6 +10,8 @@ module JSTP
       @token = message["token"]
       @resource = message["resource"]
       @message = message
+      @response = message.clone
+      @response["body"] = {}
     end
   end
 end
