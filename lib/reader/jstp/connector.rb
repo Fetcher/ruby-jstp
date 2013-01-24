@@ -17,7 +17,12 @@ module Reader
         @server = TCPServer.open @source.port.inbound
         loop {
           Thread.start(@server.accept) { |client|
-            ::JSTP::Engine.instance.dispatch JSON.parse client.gets
+            begin 
+              ::JSTP::Engine.instance.dispatch JSON.parse client.gets
+            rescue Exception => e
+              puts "\e[31m#{e.message}\e[0m"
+              puts e.backtrace
+            end
           }
         }
       end
