@@ -26,8 +26,8 @@ module JSTP
       query = []
       resource_stack.each do |item|
         begin
-          eval(class_stack + item.to_s.capitalize)
-          class_stack += "#{item.capitalize}::"
+          eval(class_stack + item)
+          class_stack += "#{item}::"
         rescue NameError, SyntaxError
           query << item
         end
