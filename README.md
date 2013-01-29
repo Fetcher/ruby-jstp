@@ -49,9 +49,30 @@ Gateways
 
 Every JSTP server knows its own hostname, which should match the first string in the resource array of the message. If the host as received in the message does not corresponds to this server, it should look up for the right server and dispatch it.
 
-## Installation
+API
+---
 
-Add this line to your application's Gemfile:
+The API of the JSTP Ruby Gem remained undocumented, mainly because right now it is sketchy. Here I write some guidelines:
+
+- It should be possible to pass a Logger as argument to JSTP so that ingoing and outgoing dispatches and exceptions are logged.
+- Now that JSTP is an engine, lets drop the DSL in the main object and use the standard Ruby configuration strategy:
+
+    JSTP.config do lconfigl
+      config.strategy outgoing: :tcp, ingoing: :websocket
+      config.port outgoing: 80, ingoing: 65
+      config.hostname "session.manager"
+    end 
+
+- A block as a middleware should also be configurable in the dispatch, similar to the former implementation.
+- The engine should be configured with a hostname that will override the linux hostname found automatically by JSTP. This hostname will be used to detect dispatches as aimed to this node.
+- The engine should automatically forward ingoing dispatches that carry a different hostname from the one of this node to the corresponding node. In this way, each JSTP Node is automatically a gateway.
+- There should be a DSL in the Controller class for creating and sending a JSTP Dispatch. The library should be able to recognize when an outgoing dispatch is actually aimed at self, so it gets mapped correctly without the need to generate network activity. This DSL should provide also an easy way to switch outgoing strategies.
+- The message as passed to the Controller's initializer should be made into a Private Class Data. In this context, I should explore a little the idea of mapping the ingoing Dispatch into a class.
+- Test implementation with Oj JSON parser/dumper.
+- [distant future] Support for SSL/TLS.
+
+## Installation
+Add this line to your application's Gemfile: 
 
     gem 'jstp'
 
