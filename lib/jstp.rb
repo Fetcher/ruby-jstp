@@ -6,28 +6,29 @@ require 'json'
 require 'discoverer'
 require 'symbolmatrix'
 require 'uuid'
-
-require 'jstp/web_socket'
-
-require 'jstp/api'
-require 'jstp/base'
-require 'jstp/connector'
+require 'oj'
+require 'logger'
 
 require 'jstp/engine'
 require 'jstp/controller'
+require 'jstp/dispatch'
+require 'jstp/configuration'
+require 'jstp/version'
 
-require 'writer/jstp/connector'
-require 'reader/jstp/connector'
+require 'reader/jstp/engine'
+require 'writer/jstp/dispatch'
 
 # Node for the JSTP protocol. Reference implementation in Ruby
 module JSTP
 
   # Configure the JSTP node. Usage:
-  #    JSTP.config do |config|
-  #      config.port :inbound => 33333, :outbound => 33333
-  #      config.strategy :inbound => :tcp, :outbound => :websocket
-  #      config.logger Logger.new $stdout
-  #      config.hostname `hostname` 
+  #
+  #     JSTP.config do |config|
+  #       config.port :inbound => 33333, :outbound => 33333
+  #       config.strategy :inbound => :tcp, :outbound => :websocket
+  #       config.logger Logger.new $stdout
+  #       config.hostname `hostname` 
+  #     end
   def self.config &block
     block.call Configuration.instance
   end

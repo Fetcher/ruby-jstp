@@ -13,6 +13,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'discoverer'
   gem.add_dependency 'symbolmatrix'
   gem.add_dependency 'uuid'
+  gem.add_dependency 'oj'
 
   gem.add_development_dependency 'rspec'
   gem.add_development_dependency 'cucumber'

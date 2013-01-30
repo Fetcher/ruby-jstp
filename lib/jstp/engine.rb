@@ -1,28 +1,27 @@
 module JSTP
   class Engine
-    include Singleton
+    include Discoverer::Reader
+
+    def initialize
+      @config = Configuration.instance
+      from.send @config.strategy.inbound
+    end
     
     # Processes the dispatch in the new REST engine way
-    def dispatch message
+    def dispatch message, client
       host, the_class, query = discover_resource message["resource"].clone
-      resource = the_class.new message
-      if query.empty? && (message["body"].nil? || message["body"].empty?)
+      if the_class.ancestors.include? JSTP::Controller
+        resource = the_class.new message, query, self
         resource.send message["method"].downcase.to_sym
       else
-        resource.send(
-          message["method"].downcase.to_sym, 
-          {
-            "body" => message["body"],
-            "query" => query
-          }
-        )
+        raise NotPermitted, "The selected resource is forbidden for this type of request"
       end
     end
 
     def discover_resource resource_stack
       response = []
       response << resource_stack.shift
-      class_stack = "::"
+      class_stack = "::#{self.class}::"
       query = []
       resource_stack.each do |item|
         begin
@@ -37,5 +36,11 @@ module JSTP
       response << query
       return response
     end
+
+    def sockets
+      @sockets ||= {}
+    end
+
+    class NotPermitted < RuntimeError; end
   end
 end

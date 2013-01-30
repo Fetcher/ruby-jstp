@@ -5,6 +5,7 @@
 #   "timestamp": 1536345124,
 #   "token": ["8ugw324", "34fqwer"],
 #   "X-Server": "EventMachine",
+#   "referer": ["google.com", "search"]
 #   "body": {
 #     "name": "Xavier"
 #   }
@@ -18,6 +19,7 @@ class Localhost < JSTP::Engine
       resource # => ["localhost", "User", "4"]
       query # => ["4"]
       timestamp # => 1536345124
+      referer # => ["google.com", "search"]
       token # => ["8ugw324", "34fqwer"]
       headers # => {"token" => ..., timestamp => ..., "X-Server" => ...}
       body # => {"name" => "Xavier"}
@@ -28,7 +30,7 @@ class Localhost < JSTP::Engine
         "remote.host/Login/success", 
         { "message" => "Login successful for user #{body['name']}" },
         { "X-Greet" => "Hello" }
-      )
+      ).to.websocket
       # => {
       #   "protocol": ["JSTP", "0.1"],
       #   "method": "POST",
@@ -47,6 +49,7 @@ class Localhost < JSTP::Engine
       # timestamp: 1536345124
       # token: 8ugw324/34fqwer
       # X-Server: EventMachine
+      # referer: google.com/search
       #
       # name: Xavier
 

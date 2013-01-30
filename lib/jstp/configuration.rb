@@ -6,16 +6,17 @@ module JSTP
       @port = SymbolMatrix :inbound => 33333, :outbound => 33333
       @strategy = SymbolMatrix :inbound => :tcp, :outbound => :tcp
       @logger = Logger.new $stdout
-      @hostname = `hostname`
+      @hostname = (`hostname`)[0..-2]
+      @current_engine = nil
     end
 
     def port argument = nil
-      @port = argument unless argument.nil?
+      @port = SymbolMatrix argument unless argument.nil?
       @port
     end
 
     def strategy argument = nil
-      @strategy = argument unless argument.nil?
+      @strategy = SymbolMatrix argument unless argument.nil?
       @strategy
     end
 
@@ -27,6 +28,11 @@ module JSTP
     def logger argument = nil
       @logger = argument unless argument.nil?
       @logger
+    end
+
+    def current_engine argument = nil
+      @current_engine = argument unless argument.nil?
+      @current_engine
     end
   end
 end
