@@ -5,33 +5,36 @@ module Writer
 
       def initialize source
         @source = source
+        @config = JSTP::Configuration.instance
       end
 
       # Dispatch this applying the websocket strategy
       def websocket message
+        host = message["resource"].first
+        path = message["resource"][1..-1].join('/')
+        connection_uri = "ws://#{host}:#{@config.port.outbound}/#{path}"
+
         begin 
-          this_client = ::JSTP::WebSocket.instance
-            .client message["resource"]
+          ws = EM::WebSocketClient.connect connection_uri
           json = message.to_json
-          this_client.callback do 
-            this_client.send_msg json
-            this_client.close_connection_after_writing
+          ws.callback do 
+            ws.send_msg json
+            ws.close_connection_after_writing
           end
         rescue RuntimeError => e
-          EM.run {
-            this_client = ::JSTP::WebSocket.instance
-              .client message["resource"]
+          EM.run do
+            ws = EM::WebSocketClient.connect connection_uri
             json = message.to_json
 
-            this_client.callback do 
-              this_client.send_msg json
-              this_client.close_connection_after_writing
+            ws.callback do 
+              ws.send_msg json
+              ws.close_connection_after_writing
             end
 
-            this_client.disconnect do 
+            ws.disconnect do 
               EM::stop_event_loop
             end
-          }
+          end
         end
       end
 

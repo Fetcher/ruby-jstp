@@ -9,7 +9,21 @@ module Reader
 
       # Start the server with the websocket strategy
       def websocket
-        ::EventMachine.run &::JSTP::WebSocket.instance.event_machine
+        EM.run do
+          EM::WebSocket
+            .start host: "0.0.0.0", port: Connector.instance.port.inbound do 
+              |server|
+            
+            server.onopen do
+              JSTP::WebSocket.instance.sockets[UUID.new.generate] = server
+            end
+
+            server.onmessage do |message|
+              message = JSON.parse message
+              JSTP::Engine.instance.dispatch(message, 
+                JSTP::WebSocket.instance.sockets.key(server))
+            end
+        end
       end
 
       # Start the server with the TCP strategy
