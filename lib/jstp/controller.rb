@@ -19,7 +19,7 @@ module JSTP
     end
 
     def dispatch method = nil, resource = nil, body = {}, headers = {}
-      @dispatch ||= Dispatch.new @original
+      @dispatch = Dispatch.new @original
       @dispatch.method = method if method
       @dispatch.resource = resource unless resource.nil?
       @dispatch.body = body
