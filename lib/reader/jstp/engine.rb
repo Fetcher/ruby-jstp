@@ -47,8 +47,8 @@ module Reader
       private
         def log_exception exception, message
           @config.logger.error "#{exception.class}: #{exception.message}"
-          @config.logger.debug exception.backtrace
-          @config.logger.debug message if message
+          @config.logger.debug exception.backtrace.to_s
+          @config.logger.debug Oj.dump message if message
         end
     end
   end
