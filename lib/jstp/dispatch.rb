@@ -3,9 +3,7 @@ module JSTP
     include Discoverer::Writer
     
     def initialize original = nil
-      self["protocol"] = ["JSTP", "0.1"]
-      self["timestamp"] = Time.now.to_i
-
+      
       unless original.nil?
         if original.is_a? Hash
           original.each do |key, value|
@@ -17,6 +15,9 @@ module JSTP
           end
         end
       end
+
+      self["protocol"] = ["JSTP", "0.1"] unless self.has_key? "protocol"
+      self["timestamp"] = Time.now.to_i
     end
 
     def to_s
