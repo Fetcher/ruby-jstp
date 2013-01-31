@@ -72,7 +72,7 @@ module Writer
           end
         end
 
-        if @source.body and not @source.body.empty?
+        unless @source.body.nil?
           response += "\n"
           if @source.body.is_a? Hash
             @source.body.each do |key, value|
