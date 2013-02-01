@@ -37,8 +37,10 @@ module Reader
               @engine.sockets[UUID.new.generate] = client
               @message = ::JSTP::Dispatch.new client.gets
               @engine.dispatch @message, client
+              Thread.current.kill
             rescue Exception => exception
               log_exception exception, @message
+              Thread.current.kill
             end
           }
         }
