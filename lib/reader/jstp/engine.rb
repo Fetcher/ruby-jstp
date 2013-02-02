@@ -1,9 +1,9 @@
 module Reader
   module JSTP
     class Engine
-      def initialize engine
+      def initialize source
         @config = ::JSTP::Configuration.instance
-        @engine = engine
+        @source = source
       end
 
       # Start the server with the websocket strategy
@@ -13,13 +13,13 @@ module Reader
             .start host: "0.0.0.0", port: @config.port.inbound do |server|
             
             server.onopen do
-              @engine.sockets[UUID.new.generate] = server
+              @source.clients[UUID.new.generate] = server
             end
 
             server.onmessage do |message|
               begin
                 @message = ::JSTP::Dispatch.new message
-                @engine.dispatch(@message, server)
+                @source.dispatch(@message, server)
               rescue Exception => exception
                 log_exception exception, @message
               end
@@ -34,9 +34,9 @@ module Reader
         loop {
           Thread.start(@server.accept) { |client|
             begin 
-              @engine.sockets[UUID.new.generate] = client
+              @source.clients[UUID.new.generate] = client
               @message = ::JSTP::Dispatch.new client.gets
-              @engine.dispatch @message, client
+              @source.dispatch @message, client
               client.close
             rescue Exception => exception
               log_exception exception, @message

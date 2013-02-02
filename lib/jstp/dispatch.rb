@@ -1,18 +1,21 @@
 module JSTP
   class Dispatch < Hash
     include Discoverer::Writer
+    include Discoverer::Reader
     
-    def initialize original = nil
+    def initialize *args
       
-      unless original.nil?
-        if original.is_a? Hash
-          original.each do |key, value|
-            self[key] = value
+      unless args.empty?
+        if args.length == 1
+          if args.first.is_a? Hash
+            from.hash args.first
+          elsif args.first.is_a? String
+            from.string args.first
+          elsif args.first.is_a? Symbol
+            self.method = args.first
           end
-        elsif original.is_a? String
-          Oj.load(original).each do |key, value|
-            self[key] = value
-          end
+        else
+          from.array args
         end
       end
 

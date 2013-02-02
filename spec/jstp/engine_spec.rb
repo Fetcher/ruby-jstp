@@ -79,6 +79,10 @@ describe JSTP::Engine do
           end
         end
       end
+
+      context 'the target class does not exist' do
+        it 'should run the method in the engine'
+      end
     end
   end
 end

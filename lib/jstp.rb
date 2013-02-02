@@ -16,6 +16,7 @@ require 'jstp/configuration'
 require 'jstp/version'
 
 require 'reader/jstp/engine'
+require 'reader/jstp/dispatch'
 require 'writer/jstp/dispatch'
 
 # Node for the JSTP protocol. Reference implementation in Ruby
@@ -28,6 +29,7 @@ module JSTP
   #       config.strategy :inbound => :tcp, :outbound => :websocket
   #       config.logger Logger.new $stdout
   #       config.hostname `hostname` 
+  #       config.gateway true
   #     end
   def self.config &block
     block.call Configuration.instance

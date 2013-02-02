@@ -18,16 +18,16 @@ module JSTP
       Configuration.instance.logger.info original.to.short
     end
 
-    def dispatch method = nil, resource = nil, body = {}, headers = {}
+    # Since it delegates Reader::Dispatch, the method is
+    # @param Method
+    # @param Resource
+    # @param Body
+    # @param Headers
+    def dispatch *args
       @dispatch = Dispatch.new @original
-      @dispatch.method = method if method
-      @dispatch.resource = resource unless resource.nil?
-      @dispatch.body = body
       @dispatch.referer = [Configuration.instance.hostname] + (self.class.to_s.split("::") - engine.class.to_s.split("::"))
+      @dispatch.from.array args
 
-      headers.each do |key, value|
-        @dispatch[key] = value
-      end
       @dispatch
     end
   end

@@ -2,19 +2,28 @@ module JSTP
   class Engine
     include Discoverer::Reader
 
-    def initialize
+    def initialize test = false
       @config = Configuration.instance
-      from.send @config.strategy.inbound
+      from.send @config.strategy.inbound unless test
     end
     
     # Processes the dispatch in the new REST engine way
     def dispatch message, client
       host, the_class, query = discover_resource message["resource"].clone
-      if the_class.ancestors.include? JSTP::Controller
-        resource = the_class.new message, query, self
-        resource.send message["method"].downcase.to_sym
+      if @config.gateway && host != @config.hostname && host != 'localhost'
+        # May be we should gateway this message, if this wasn't aimed at us
+        message.to.send @config.strategy.outbound
       else
-        raise NotPermitted, "The selected resource is forbidden for this type of request"
+        if the_class.ancestors.include? JSTP::Controller
+          resource = the_class.new message, query, self
+          resource.send message["method"].downcase.to_sym
+        else
+          if @config.environment == :development
+            raise NotAControllerError, "The resource class #{the_class} for #{message["resource"].join("/")} was found, but is not a JSTP::Controller"
+          else
+            raise NotPermittedError, "The selected resource is forbidden for this type of request"
+          end
+        end
       end
     end
 
@@ -37,10 +46,11 @@ module JSTP
       return response
     end
 
-    def sockets
-      @sockets ||= {}
+    def clients
+      @clients ||= {}
     end
 
-    class NotPermitted < RuntimeError; end
+    class NotPermittedError < RuntimeError; end
+    class NotAControllerError < RuntimeError; end
   end
 end

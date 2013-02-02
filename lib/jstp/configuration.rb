@@ -8,6 +8,8 @@ module JSTP
       @logger = Logger.new $stdout
       @hostname = (`hostname`)[0..-2]
       @current_engine = nil
+      @environment = :development
+      @gateway = true
     end
 
     def port argument = nil
@@ -15,9 +17,17 @@ module JSTP
       @port
     end
 
+    def port= argument
+      port argument
+    end
+
     def strategy argument = nil
       @strategy = SymbolMatrix argument unless argument.nil?
       @strategy
+    end
+
+    def strategy= argument
+      strategy argument
     end
 
     def hostname argument = nil
@@ -25,14 +35,45 @@ module JSTP
       @hostname
     end
 
+    def hostname= argument
+      hostname argument
+    end
+
     def logger argument = nil
       @logger = argument unless argument.nil?
       @logger
     end
 
+    def logger= argument
+      logger argument
+    end
+
+    # Reevaluate
     def current_engine argument = nil
       @current_engine = argument unless argument.nil?
       @current_engine
+    end
+
+    def current_engine= argument
+      current_engine argument
+    end
+
+    def gateway argument = nil
+      @gateway = argument unless argument.nil?
+      @gateway
+    end
+
+    def gateway= argument
+      gateway argument
+    end
+
+    def environment argument = nil
+      @environment = argument unless argument.nil?
+      @environment
+    end
+
+    def environment= argument
+      environment argument
     end
   end
 end

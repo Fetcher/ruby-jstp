@@ -1,12 +1,9 @@
-require 'oj'
-
 module Writer
   module JSTP
-    class Dispatch
-      attr_accessor :source
+    class Dispatch < Discoverer::Pattern
 
       def initialize source
-        @source = source
+        super source
         @config = ::JSTP::Configuration.instance
       end
 

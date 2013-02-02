@@ -15,7 +15,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'uuid'
   gem.add_dependency 'oj'
 
-  gem.add_development_dependency 'rspec'
+  gem.add_development_dependency 'rspec', '>= 2.1.0'
   gem.add_development_dependency 'cucumber'
 
   gem.files         = `git ls-files`.split($\)
