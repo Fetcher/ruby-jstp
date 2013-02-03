@@ -6,14 +6,7 @@ module JSTP
       @original = original
       @engine = engine
 
-      @protocol = original.protocol
-      @method = original.method
-      @referer = original.referer
-      @timestamp = original.timestamp
-      @token = original.token
-      @resource = original.resource
       @query = query
-      @body = original.body
 
       Configuration.instance.logger.info original.to.short
     end
@@ -29,6 +22,34 @@ module JSTP
       @dispatch.from.array args
 
       @dispatch
+    end
+
+    def protocol
+      original.protocol
+    end
+
+    def method
+      original.method
+    end
+
+    def referer
+      original.referer
+    end
+
+    def timestamp
+      original.timestamp
+    end
+
+    def token
+      original.token
+    end
+
+    def resource
+      original.resource
+    end
+
+    def body
+      original.body
     end
   end
 end
