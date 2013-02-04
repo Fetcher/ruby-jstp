@@ -14,6 +14,9 @@ module Reader
             
             server.onopen do
               @source.clients[UUID.new.generate] = server
+              if @source.respond_to? :open
+                @source.open server, @source.clients.key server
+              end
             end
 
             server.onmessage do |message|
@@ -22,6 +25,12 @@ module Reader
                 @source.dispatch(@message, server)
               rescue Exception => exception
                 log_exception exception, @message
+              end
+            end
+
+            server.onclose do 
+              if @source.respond_to? :close
+                @source.close server, @source.clients.key server
               end
             end
           end
