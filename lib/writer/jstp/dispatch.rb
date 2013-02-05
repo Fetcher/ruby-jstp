@@ -30,6 +30,7 @@ module Writer
 
             ws.callback do 
               ws.send_msg @source.to.json
+              @config.logger.debug @source.to_s
               ws.close_connection_after_writing
             end
 
