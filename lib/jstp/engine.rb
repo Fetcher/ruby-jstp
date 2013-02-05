@@ -52,5 +52,54 @@ module JSTP
 
     class NotPermittedError < RuntimeError; end
     class NotAControllerError < RuntimeError; end
+
+    # DSL for configuration
+    def self.port argument = nil
+      Configuration.instance.port argument
+    end
+
+    def self.port= argument
+      Configuration.instance.port = argument
+    end
+
+    def self.strategy argument = nil
+      Configuration.instance.strategy argument
+    end
+
+    def self.strategy= argument
+      Configuration.instance.strategy = argument
+    end
+
+    def self.logger argument = nil
+      Configuration.instance.logger argument
+    end
+
+    def self.logger= argument
+      Configuration.instance.logger = argument
+    end
+
+    def self.hostname argument = nil
+      Configuration.instance.hostname argument
+    end
+
+    def self.hostname= argument
+      Configuration.instance.hostname = argument
+    end
+
+    def self.environment argument = nil
+      Configuration.instance.environment argument
+    end
+
+    def self.environment= argument
+      Configuration.instance.environment = argument
+    end
+
+    def self.gateway argument = nil
+      Configuration.instance.gateway argument
+    end
+
+    def self.gateway= argument
+      Configuration.instance.gateway = argument
+    end
   end
 end

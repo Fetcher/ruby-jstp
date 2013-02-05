@@ -7,7 +7,6 @@ module JSTP
       @strategy = SymbolMatrix :inbound => :tcp, :outbound => :tcp
       @logger = Logger.new $stdout
       @hostname = (`hostname`)[0..-2]
-      @current_engine = nil
       @environment = :development
       @gateway = true
     end
@@ -46,16 +45,6 @@ module JSTP
 
     def logger= argument
       logger argument
-    end
-
-    # Reevaluate
-    def current_engine argument = nil
-      @current_engine = argument unless argument.nil?
-      @current_engine
-    end
-
-    def current_engine= argument
-      current_engine argument
     end
 
     def gateway argument = nil
