@@ -65,7 +65,11 @@ module Writer
             if value.is_a? Array
               response += "#{key}: #{value.join('/')}\n"
             else
-              response += "#{key}: #{value}\n"
+              if key == 'timestamp'
+                response += "#{key}: #{Time.at(value)}\n"
+              else
+                response += "#{key}: #{value}\n"
+              end
             end
           end
         end
