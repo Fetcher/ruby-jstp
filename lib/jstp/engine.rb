@@ -15,7 +15,7 @@ module JSTP
         message.to.send @config.strategy.outbound
       else
         # Is there a reverse gateway token there?
-        if @config.gateway.reverse && message.gateway == :reverse
+        if @config.gateway.reverse && message.gateway == 'reverse'
           clients[message.token[1]].send message.to.json
           @config.logger.debug message.to.string
         else
