@@ -16,8 +16,12 @@ module JSTP
       else
         # Is there a reverse gateway token there?
         if @config.gateway.reverse && message.gateway == 'reverse'
-          clients[message.token[1]].send message.to.json
-          @config.logger.debug message.to.string
+          if clients.has_key? message.token.first
+            clients[message.token.first].send message.to.json
+            @config.logger.debug message.to.string
+          else
+            raise ClientNotFoundError, "Client #{messagel.token.first} is not registered in this server"
+          end
         else
           if the_class.ancestors.include? JSTP::Controller
             resource = the_class.new message, query, self, client
@@ -58,6 +62,7 @@ module JSTP
 
     class NotPermittedError < RuntimeError; end
     class NotAControllerError < RuntimeError; end
+    class ClientNotFoundError < RuntimeError; end
 
     # DSL for configuration
     def self.port argument = nil
