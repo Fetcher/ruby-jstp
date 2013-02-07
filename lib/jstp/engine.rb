@@ -17,6 +17,7 @@ module JSTP
         # Is there a reverse gateway token there?
         if @config.gateway.reverse && message.gateway == :reverse
           clients[message.token[1]].send message.to.json
+          @config.logger.debug message.to.string
         else
           if the_class.ancestors.include? JSTP::Controller
             resource = the_class.new message, query, self, client
