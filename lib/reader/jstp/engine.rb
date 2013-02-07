@@ -59,7 +59,7 @@ module Reader
         def log_exception exception, message
           @config.logger.error "#{exception.class}: #{exception.message}"
           @config.logger.debug exception.backtrace.to_s
-          @config.logger.debug Oj.dump message if message
+          @config.logger.debug ::JSTP::Dispatch.new(message).to.string if message
         end
     end
   end
