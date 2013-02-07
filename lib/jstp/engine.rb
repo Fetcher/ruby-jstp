@@ -20,7 +20,7 @@ module JSTP
             clients[message.token.first].send message.to.json
             @config.logger.debug message.to.string
           else
-            raise ClientNotFoundError, "Client #{messagel.token.first} is not registered in this server"
+            raise ClientNotFoundError, "Client #{message.token.first} is not registered in this server"
           end
         else
           if the_class.ancestors.include? JSTP::Controller
