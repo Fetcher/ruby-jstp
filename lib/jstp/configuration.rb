@@ -8,7 +8,7 @@ module JSTP
       @logger = Logger.new $stdout
       @hostname = (`hostname`)[0..-2]
       @environment = :development
-      @gateway = true
+      @gateway = SymbolMatrix :reverse => true, :forward => true, :local => true
     end
 
     def port argument = nil
@@ -48,7 +48,7 @@ module JSTP
     end
 
     def gateway argument = nil
-      @gateway = argument unless argument.nil?
+      @gateway = SymbolMatrix argument unless argument.nil?
       @gateway
     end
 

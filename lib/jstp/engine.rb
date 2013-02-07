@@ -10,18 +10,23 @@ module JSTP
     # Processes the dispatch in the new REST engine way
     def dispatch message, client
       host, the_class, query = discover_resource message["resource"].clone
-      if @config.gateway && host != @config.hostname && host != 'localhost'
+      if @config.gateway.forward && host != @config.hostname && host != 'localhost'
         # May be we should gateway this message, if this wasn't aimed at us
         message.to.send @config.strategy.outbound
       else
-        if the_class.ancestors.include? JSTP::Controller
-          resource = the_class.new message, query, self, client
-          resource.send message["method"].downcase.to_sym
+        # Is there a reverse gateway token there?
+        if @config.gateway.reverse && message.gateway == :reverse
+          clients[message.token[1]].send message.to.json
         else
-          if @config.environment == :development
-            raise NotAControllerError, "The resource class #{the_class} for #{message["resource"].join("/")} was found, but is not a JSTP::Controller"
+          if the_class.ancestors.include? JSTP::Controller
+            resource = the_class.new message, query, self, client
+            resource.send message["method"].downcase.to_sym
           else
-            raise NotPermittedError, "The selected resource is forbidden for this type of request"
+            if @config.environment == :development
+              raise NotAControllerError, "The resource class #{the_class} for #{message["resource"].join("/")} was found, but is not a JSTP::Controller"
+            else
+              raise NotPermittedError, "The selected resource is forbidden for this type of request"
+            end
           end
         end
       end
