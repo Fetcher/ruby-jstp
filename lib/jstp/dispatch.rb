@@ -102,5 +102,13 @@ module JSTP
     def body= the_body
       self["body"] = the_body
     end
+
+    def gateway
+      self["gateway"]
+    end
+
+    def gateway= the_gateway
+      self["gateway"] = the_gateway
+    end
   end
 end
