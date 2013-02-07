@@ -1,12 +1,13 @@
 module JSTP
   class Controller
-    attr_reader :protocol, :method, :referer, :resource, :timestamp, :token, :original, :query, :body, :engine
+    attr_reader :protocol, :method, :referer, :resource, :timestamp, :token, :original, :query, :body, :engine, :client
     
-    def initialize original, query, engine
+    def initialize original, query, engine, client = nil
       @original = original
       @engine = engine
 
       @query = query
+      @client = client unless client.nil?
 
       Configuration.instance.logger.info original.to.short
     end

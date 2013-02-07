@@ -15,7 +15,7 @@ module JSTP
         message.to.send @config.strategy.outbound
       else
         if the_class.ancestors.include? JSTP::Controller
-          resource = the_class.new message, query, self
+          resource = the_class.new message, query, self, client
           resource.send message["method"].downcase.to_sym
         else
           if @config.environment == :development
