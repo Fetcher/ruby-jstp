@@ -4,6 +4,7 @@ module JSTP
 
     def initialize test = false
       @config = Configuration.instance
+      @logger = @config.logger
       from.send @config.strategy.inbound unless test
     end
     
@@ -58,6 +59,10 @@ module JSTP
 
     def clients
       @clients ||= {}
+    end
+
+    def logger
+      @logger
     end
 
     class NotPermittedError < RuntimeError; end

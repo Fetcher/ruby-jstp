@@ -1,10 +1,12 @@
 module Writer
   module JSTP
     class Dispatch < Discoverer::Pattern
+      attr_accessor :pool
 
       def initialize source
         super source
         @config = ::JSTP::Configuration.instance
+        @pool = {}
       end
 
       # Dispatch this applying the websocket strategy
@@ -41,17 +43,22 @@ module Writer
         end
       end
 
-      # Dispatch thid applying the TCP strategy
+      # Dispatch applying the TCP strategy
       def tcp port = nil
-        if port.nil?
-          client = TCPSocket.open @source["resource"].first, @config.port.outbound
-        else
-          client = TCPSocket.open @source["resource"].first, port
+        port = @config.port.outbound if port.nil?
+        host = @source['resource'].first
+
+        @pool[host] ||= TCPSocket.new host, port
+
+        if @pool[host].closed?
+          @pool[host] = TCPSocket.new host, port
+        elsif not @pool[host].stat.readable?
+          @pool[host].close
+          @pool[host] = TCPSocket.new host, port
         end
 
-        client.puts @source.to.json
+        @pool[host].puts @source.to.json
         @config.logger.debug @source.to_s
-        client.close
       end
 
       def json

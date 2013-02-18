@@ -39,20 +39,49 @@ module Reader
 
       # Start the server with the TCP strategy
       def tcp
-        @server = TCPServer.open @config.port.inbound
+        @server = TCPServer.new @config.port.inbound          
+
+        @config.logger.info "JSTP node running on TCP mode in port #{@config.port.inbound}"
         loop {
           Thread.start(@server.accept) { |client|
-            begin 
-              @source.clients[UUID.new.generate] = client
-              @message = ::JSTP::Dispatch.new client.gets
-              @source.dispatch @message, client
+            begin
+              # Opening routine
+              token = UUID.new.generate 
+              @source.clients[token] = client
+              if @source.respond_to? :open
+                begin
+                  @source.open client, token
+                rescue Exception => e
+                  @config.logger.error "On open hook: #{e.class}: #{e.message}"
+                  @config.logger.debug e.backtrace.to_s
+                end
+              end
+
+              # Message loop
+              while line = client.gets
+                begin
+                  @message = ::JSTP::Dispatch.new line
+                  @source.dispatch @message, client
+                rescue Exception => e
+                  log_exception e, @message
+                end
+              end
+
+              # Closing routine
               client.close
+              @source.clients.delete token
+              if @source.respond_to? :close
+                @source.close client, token
+              end
             rescue Exception => exception
-              log_exception exception, @message
+              @config.logger.error "Client #{token} is DOWN: #{exception.class}: #{exception.message}"
+              @config.logger.debug exception.backtrace.to_s
               client.close
             end
           }
         }
+      rescue Exception => e
+        @config.logger.fatal "Could not initialize TCP server on port #{@config.port.inbound}"
       end
 
       private
