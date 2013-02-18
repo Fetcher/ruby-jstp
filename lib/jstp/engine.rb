@@ -18,8 +18,13 @@ module JSTP
         # Is there a reverse gateway token there?
         if @config.gateway.reverse && message.gateway == 'reverse'
           if clients.has_key? message.token.first
-            clients[message.token.first].send message.to.json
-            @config.logger.debug message.to.string
+            begin 
+              clients[message.token.first].send message.to.json
+              @config.logger.debug message.to.string
+            rescue Exception => exception
+              @config.logger.error exception.message
+              @config.logger.debug exception.backtrace.to_s
+            end
           else
             raise ClientNotFoundError, "Client #{message.token.first} is not registered in this server"
           end
