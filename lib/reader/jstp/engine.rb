@@ -41,7 +41,7 @@ module Reader
       def tcp
         @server = TCPServer.new @config.port.inbound          
 
-        @config.logger.info "JSTP node running on TCP mode in port #{@config.port.inbound}"
+        @config.logger.info "JSTP node running on TCP mode in #{@config.hostname}:#{@config.port.inbound}"
         loop {
           Thread.start(@server.accept) { |client|
             begin
