@@ -12,7 +12,7 @@ module Reader
 
       # Actually, is JSON
       def string the_string
-        Oj.load(the_string).each do |key, value|
+        JSON.parse(the_string).each do |key, value|
           @source[key] = value
         end
 

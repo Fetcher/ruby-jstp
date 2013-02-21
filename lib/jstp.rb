@@ -6,7 +6,7 @@ require 'json'
 require 'discoverer'
 require 'symbolmatrix'
 require 'uuid'
-require 'oj'
+#require 'oj'
 require 'logger'
 
 require 'jstp/engine'

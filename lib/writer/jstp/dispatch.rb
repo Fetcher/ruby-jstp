@@ -62,7 +62,7 @@ module Writer
       end
 
       def json
-        Oj.dump @source
+        @source.to_json
       end
 
       def string 
@@ -85,10 +85,10 @@ module Writer
           response += "\n"
           if @source.body.is_a? Hash
             @source.body.each do |key, value|
-              response += "#{key}: #{Oj.dump(value)}\n"
+              response += "#{key}: #{value.to_json}\n"
             end
           else
-            response += Oj.dump @source.body
+            response += @source.body.to_json
           end
         end
         response
@@ -98,7 +98,7 @@ module Writer
         unless @source.body
           "#{@source.method} #{@source.resource.join('/')}"
         else
-          "#{@source.method} #{@source.resource.join('/')}?#{Oj.dump(@source.body)}"
+          "#{@source.method} #{@source.resource.join('/')}?#{@source.body.to_json}"
         end
       end
     end
