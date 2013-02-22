@@ -26,7 +26,11 @@ module JSTP
               @config.logger.debug exception.backtrace.to_s
             end
           else
-            raise ClientNotFoundError, "Client #{message.token.first} is not registered in this server"
+            if respond_to? :client_not_found
+              client_not_found message.token.first, message
+            else
+              raise ClientNotFoundError, "Client #{message.token.first} is not registered in this server"
+            end
           end
         else
           if the_class.ancestors.include? JSTP::Controller
