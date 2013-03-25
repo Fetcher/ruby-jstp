@@ -25,7 +25,6 @@ The API of the JSTP Ruby Gem remained undocumented, mainly because right now it 
 -   The engine should automatically forward ingoing dispatches that carry a different hostname from the one of this node to the corresponding node. In this way, each JSTP Node is automatically a gateway.
 -   There should be a DSL in the Controller class for creating aahnd sending a JSTP Dispatch. The library should be able to recognize when an outgoing dispatch is actually aimed at self, so it gets mapped correctly without the need to generate network activity. This DSL should provide also an easy way to switch outgoing strategies.
 -   The message as passed to the Controller's initializer should be made into a Private Class Data. In this context, I should explore a little the idea of mapping the ingoing Dispatch into a class.
--   Test implementation with Oj JSON parser/dumper.
 -   The Dispatch class should have a Writer an Reader that make it possible to log and parse dispatches from the abbreviated, similar-to-HTTP syntax.
 -   [distant future] Support for SSL/TLS.
 
