@@ -85,7 +85,11 @@ module Writer
           response += "\n"
           if @source.body.is_a? Hash
             @source.body.each do |key, value|
-              response += "#{key}: #{JSON.dump(value)}\n"
+              begin
+                response += "#{key}: #{JSON.dump(value)}\n"
+              rescue JSON::GeneratorError => e 
+                response += "#{key}: #{value}\n"
+              end
             end
           else
             response += JSON.dump @source.body
